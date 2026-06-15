@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Calculator</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #expression {
+            width: 250px;
+            height: 40px;
+            font-size: 20px;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: 60px;
+            height: 50px;
+            font-size: 18px;
+            margin: 2px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Calculator</h2>
+
+<input type="text" id="expression">
+
+<br>
+
+<button onclick="append('7')">7</button>
+<button onclick="append('8')">8</button>
+<button onclick="append('9')">9</button>
+<button onclick="append('/')">/</button>
+
+<br>
+
+<button onclick="append('4')">4</button>
+<button onclick="append('5')">5</button>
+<button onclick="append('6')">6</button>
+<button onclick="append('*')">*</button>
+
+<br>
+
+<button onclick="append('1')">1</button>
+<button onclick="append('2')">2</button>
+<button onclick="append('3')">3</button>
+<button onclick="append('-')">-</button>
+
+<br>
+
+<button onclick="append('0')">0</button>
+<button onclick="append('.')">.</button>
+<button onclick="append('(')">(</button>
+<button onclick="append(')')">)</button>
+
+<br>
+
+<button onclick="clearExpression()">C</button>
+<button onclick="calculate()">=</button>
+<button onclick="append('^')">^</button>
+<button onclick="append('+')">+</button>
+
+<h3 id="result"></h3>
+
+<script>
+
+    async function calculate() {
+
+        let expression =
+            document.getElementById("expression").value;
+
+        try {
+
+            let response =
+                await fetch(
+                    "/calculate?expression="
+                    + encodeURIComponent(expression));
+
+            let result =
+                await response.text();
+
+            document.getElementById("result")
+                .innerText = result;
+
+        } catch (error) {
+
+            document.getElementById("result")
+                .innerText = "Error communicating with server.";
+        }
+    }
+
+    function append(value) {
+
+        document.getElementById("expression").value += value;
+    }
+
+    function clearExpression() {
+
+        document.getElementById("expression").value = "";
+        document.getElementById("result").innerText = "";
+    }
+
+    document.getElementById("expression")
+        .addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter" || event.key === "=") {
+                calculate();
+            }
+        });
+
+</script>
+
+</body>
+</html>
